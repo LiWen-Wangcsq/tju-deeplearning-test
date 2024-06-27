@@ -14,7 +14,6 @@ class CyclicShift3D(nn.Module):
         assert type(displacement) is int or len(displacement) == 3, f'displacement must be 1 or 3 dimension'
         if type(displacement) is int:
             displacement = np.array([displacement, displacement, displacement])
-        self.displacement = displacement
 
     def forward(self, x):
         return torch.roll(x, shifts=(self.displacement[0], self.displacement[1], self.displacement[2]), dims=(1, 2, 3))
@@ -462,7 +461,7 @@ class CBAM(nn.Module):
 
 
 
-class SwinUnet3D(nn.Module):
+class CSwinUnet3D(nn.Module):
     def __init__(self, *, hidden_dim, layers, heads, in_channel=1, num_classes=2, head_dim=32,
                  window_size: Union[int, List[int]] = 7, downscaling_factors=(4, 2, 2, 2),
                  relative_pos_embedding=True, dropout: float = 0.0, skip_style='stack',
@@ -576,7 +575,7 @@ def swinUnet_t_3D(hidden_dim=96, layers=(2, 2, 4, 2), heads=(3, 6, 9, 12), num_c
 
 if __name__ == '__main__':
     x = torch.rand(1, 4, 128, 128, 128)
-    net = SwinUnet3D(in_channel=4, num_classes=4, window_size=4, hidden_dim=96, layers=(2, 2, 4, 2),
+    net = CSwinUnet3D(in_channel=4, num_classes=4, window_size=4, hidden_dim=96, layers=(2, 2, 4, 2),
                      heads=(3, 6, 9, 12))
     y = net(x)
     print("params: ", sum(p.numel() for p in net.parameters()))

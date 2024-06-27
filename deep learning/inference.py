@@ -11,7 +11,7 @@ from networks.AttentionUnet import AttentionUNet
 from networks.scse import scseUNet
 from networks.CBAM2 import cbam2
 from networks.SE1 import SE1Unet
-from networks.swin_unet_3d import SwinUnet3D
+from networks.cswinunet3d import CSwinUnet3D
 
 def calculate_metric_percase(pred, gt):
     dice = metric.binary.dc(pred, gt)
@@ -89,7 +89,7 @@ if __name__ == '__main__':
     data_path = '/data1/0_Brain_Seg/WLW/unet/data/BraTS2021/dataset'
     test_save_path = 'predictions/swinunet3d/'
     save_mode_path = 'results/swinunet3d.pth'
-    net = SE1Unet(in_channels=4,num_classes=4).cuda()
+    net = CSwinUnet3D(in_channels=4,num_classes=4).cuda()
     net.load_state_dict(torch.load(save_mode_path)['model'])
     print("init weight from {}".format(save_mode_path))
     net.eval()

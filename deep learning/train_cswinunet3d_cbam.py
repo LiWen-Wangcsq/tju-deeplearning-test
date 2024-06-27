@@ -7,7 +7,7 @@ import torch.optim as optim
 from tqdm import tqdm
 from BraTS import *
 from networks.AttentionUnet import AttentionUNet
-from networks.swinunet3d_cbam import SwinUnet3D
+from networks.cswinunet3d_cbam import CSwinUnet3D
 from networks.SE import SEUnet
 from networks.CBAM import U_Net_v1
 from networks.Unet import UNet
@@ -148,7 +148,7 @@ def main(args):
 
     # 1-坏疽(NT,necrotic tumor core),2-浮肿区域(ED,peritumoral edema),4-增强肿瘤区域(ET,enhancing tumor)
     # 评价指标：ET(label4),TC(label1+label4),WT(label1+label2+label4)
-    model = SwinUnet3D(in_channel=4,num_classes=4,window_size=4,hidden_dim=96,layers=(2, 2, 4, 2), heads=(3, 6, 9, 12)).to(device)
+    model = CSwinUnet3D(in_channel=4,num_classes=4,window_size=4,hidden_dim=96,layers=(2, 2, 4, 2), heads=(3, 6, 9, 12)).to(device)
     criterion = Loss(n_classes=4, weight=torch.tensor([0.2, 0.3, 0.25, 0.25])).to(device)
     optimizer = optim.SGD(model.parameters(),momentum=0.9, lr=0, weight_decay=5e-4)
     scheduler = cosine_scheduler(base_value=args.lr,final_value=args.min_lr,epochs=args.epochs,
@@ -177,7 +177,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--num_classes', type=int, default=4)
     parser.add_argument('--seed', type=int, default=21)
-    parser.add_argument('--epochs', type=int, default=200)
+    parser.add_argument('--epochs', type=int, default=60)
     parser.add_argument('--warmup_epochs', type=int, default=10)
     parser.add_argument('--batch_size', type=int, default=2)
     parser.add_argument('--lr', type=float, default=0.004)
